@@ -48,34 +48,49 @@ class _SearchContactState extends State<SearchContact> {
     });
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-    await _firestore
-        .collection('users')
-        .where("Name", isEqualTo: _search.text)
-        .get()
-        .then((value) => {
-              setState(() {
-                userMap = value.docs[0].data();
-              })
-            });
+    try{
+      await _firestore
+          .collection('users')
+          .where("Name", isEqualTo: _search.text)
+          .get()
+          .then((value) => {
+        setState(() {
+          userMap = value.docs[0].data();
+        })
+      });
 
-    // setState(() {
-    //   isLoading = false;
-    // });
+      // setState(() {
+      //   isLoading = false;
+      // });
 
-    setState(() {
-      isLoading = false;
-      chats.add(ChatTile(
-          userMap['Name'],
-          false,
-          userMap['uid'],
-          FirebaseAuth.instance.currentUser!.uid,
-          chatId(
-            FirebaseAuth.instance.currentUser!.uid,
+      setState(() {
+        isLoading = false;
+        chats.add(ChatTile(
+            userMap['Name'],
+            false,
             userMap['uid'],
-          ),
-          _controller));
-      isEmpty = false;
-    });
+            FirebaseAuth.instance.currentUser!.uid,
+            chatId(
+              FirebaseAuth.instance.currentUser!.uid,
+              userMap['uid'],
+            ),
+            _controller));
+        isEmpty = false;
+      });
+    } catch(e){
+      showDialog(
+        context: context,
+        builder: (BuildContext) {
+          return AlertDialog(
+            content: Container(
+              child: const Text("User not found!"),
+            ),
+          );
+        },
+      );
+      print(e);
+    }
+
   }
 
   @override
@@ -137,15 +152,15 @@ class _SearchContactState extends State<SearchContact> {
             ),
             MaterialButton(
               onPressed: onSearch,
+              color: Colors.lightBlueAccent,
               child: isLoading
-                  ? CircularProgressIndicator(
+                  ? const CircularProgressIndicator(
                       color: Colors.white,
                     )
-                  : Text(
+                  : const Text(
                       "Search",
                       style: TextStyle(color: Colors.white),
                     ),
-              color: Colors.lightBlueAccent,
             ),
             Expanded(
               child: isEmpty == false

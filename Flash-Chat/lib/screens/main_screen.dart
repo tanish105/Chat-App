@@ -9,8 +9,6 @@ import '../utils/chat_tile.dart';
 class MainScreen extends StatefulWidget {
   static String id = 'MainScreen';
 
-  const MainScreen({Key? key}) : super(key: key);
-
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -95,6 +93,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         backgroundColor: Colors.lightBlueAccent,
       ),
+      body: Column(),
       // body: Column(
       //   children: [
       //     SizedBox(

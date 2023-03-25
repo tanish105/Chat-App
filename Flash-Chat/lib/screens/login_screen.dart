@@ -7,7 +7,6 @@ import '../utils/rounded_button.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginScreen extends StatefulWidget {
-
   static String id = 'LoginScreen';
 
   @override
@@ -42,12 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 48.0,
             ),
             TextField(
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                email = value;
-              },
-              decoration: kTextFieldDecoration.copyWith(hintText: "Enter Email")
-            ),
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {
+                  email = value;
+                },
+                decoration:
+                    kTextFieldDecoration.copyWith(hintText: "Enter Email")),
             const SizedBox(
               height: 8.0,
             ),
@@ -57,38 +56,52 @@ class _LoginScreenState extends State<LoginScreen> {
               onChanged: (value) {
                 password = value;
               },
-              decoration: kTextFieldDecoration.copyWith(hintText: "Enter Password"),
+              decoration:
+                  kTextFieldDecoration.copyWith(hintText: "Enter Password"),
             ),
             const SizedBox(
               height: 24.0,
             ),
             Container(
-              child: _isLoading?Center(
-                  child:  LoadingAnimationWidget.discreteCircle(
-                    color: Colors.blueAccent,
-                    secondRingColor: Colors.white,
-                    thirdRingColor: Colors.blueAccent,
-                    size: 30,
-                  )):
-              RoundedButton(
-                  text: 'Log In',
-                  onPress: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    try{
-                      final user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-                      if(user!=null){
-                        Navigator.pushNamed(context, MainScreen.id);
-                      }
-                    }catch(e){
-                      print(e);
-                    }
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  },
-                  bgColor: Colors.lightBlueAccent),
+              child: _isLoading
+                  ? Center(
+                      child: LoadingAnimationWidget.discreteCircle(
+                      color: Colors.blueAccent,
+                      secondRingColor: Colors.white,
+                      thirdRingColor: Colors.blueAccent,
+                      size: 30,
+                    ))
+                  : RoundedButton(
+                      text: 'Log In',
+                      onPress: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        try {
+                          final user = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: email, password: password);
+                          if (user != null) {
+                            Navigator.pushNamed(context, MainScreen.id);
+                          }
+                        } catch (e) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext) {
+                              return AlertDialog(
+                                content: Container(
+                                  child: const Text("Incorrect user credentials entered!"),
+                                ),
+                              );
+                            },
+                          );
+                          print(e);
+                        }
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      bgColor: Colors.lightBlueAccent),
             ),
           ],
         ),
